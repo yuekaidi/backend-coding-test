@@ -105,15 +105,17 @@
         "summary": "Retrieve rides data based on ride id",
         "tags": ["Rides"],
         "description": "To retrieve rides data with provided ride id from rides table in db",
-        "parameters": [{
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "integer",
-            "required": true,
-            "description": "Numeric ID of the user to get"
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "required": true,
+              "description": "Numeric ID of the user to get"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "Requested rides data",
@@ -141,8 +143,9 @@
   "definitions": {
     "Rides": {
       "type": "array",
-      "items":{
-          "$ref": "#/definitions/RideDb"}
+      "items": {
+        "$ref": "#/definitions/RideDb"
+      }
     },
     "RideIn": {
       "properties": {
