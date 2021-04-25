@@ -1,0 +1,232 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Backend Coding Test - Rides API",
+    "description": "API documentation for backing end coding test services for rides. This includes Creation, Reading of rides data."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8010"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health checking"
+    },
+    {
+      "name": "Rides",
+      "description": "Rides CRUD"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check API",
+        "tags": ["Health"],
+        "description": "Check service availiablity",
+        "responses": {
+          "200": {
+            "description": "Healthy"
+          }
+        }
+      }
+    },
+    "/rides": {
+      "get": {
+        "summary": "Retrieve all rides data",
+        "tags": ["Rides"],
+        "description": "To retrieve all rides data from rides table in db",
+        "responses": {
+          "200": {
+            "description": "Rides data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Rides"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new ride data",
+        "tags": ["Rides"],
+        "description": "To create new entry of ride data in rides table in db",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/RideIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return newly created ride entry in rides table in db",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Rides"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Errror"
+          }
+        }
+      }
+    },
+    "/rides/{id}": {
+      "get": {
+        "summary": "Retrieve rides data based on ride id",
+        "tags": ["Rides"],
+        "description": "To retrieve rides data with provided ride id from rides table in db",
+        "parameters": [{
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "required": true,
+            "description": "Numeric ID of the user to get"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Requested rides data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Rides"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Rides": {
+      "type": "array",
+      "items":{
+          "$ref": "#/definitions/RideDb"}
+    },
+    "RideIn": {
+      "properties": {
+        "start_lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "exclusiveMinimum": true,
+          "exclusiveMaximum": true
+        },
+        "start_long": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "exclusiveMinimum": true,
+          "exclusiveMaximum": true
+        },
+        "end_lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "exclusiveMinimum": true,
+          "exclusiveMaximum": true
+        },
+        "end_long": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "exclusiveMinimum": true,
+          "exclusiveMaximum": true
+        },
+        "rider_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "driver_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "driver_vehicle": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "example": {
+        "start_lat": 0,
+        "start_long": 0,
+        "end_lat": 30,
+        "end_long": 60,
+        "rider_name": "Amy",
+        "driver_name": "Bob",
+        "driver_vehicle": "car"
+      }
+    },
+    "RideDb": {
+      "properties": {
+        "rideId": {
+          "type": "number"
+        },
+        "startLat": {
+          "type": "number"
+        },
+        "startLong": {
+          "type": "number"
+        },
+        "endLat": {
+          "type": "number"
+        },
+        "endLong": {
+          "type": "number"
+        },
+        "riderName": {
+          "type": "string"
+        },
+        "driverName": {
+          "type": "string"
+        },
+        "driverVehicle": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
