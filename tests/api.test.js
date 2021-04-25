@@ -31,7 +31,7 @@ describe("API tests", () => {
 		});
 	});
 
-	describe("GET /rides", () => {
+	describe("GET /rides Empty", () => {
 		it("should return not found error", (done) => {
 			request(app)
 				.get("/rides")
@@ -230,7 +230,6 @@ describe("API tests", () => {
 		});
 	});
 
-
 	describe("GET /rides/{id}", () => {
 		it("should return not found ride", (done) => {
 			request(app)
@@ -271,4 +270,80 @@ describe("API tests", () => {
 		});
 	});
 
+	describe("GET /rides Pagination", () => {
+		for (var i = 0; i < 10; i++) {
+			it(`insert test entry ${i}`, (done) => {
+				request(app)
+					.post("/rides")
+					.set("Content-Type", "application/json")
+					.send({
+						"start_lat": 0,
+						"start_long": 0,
+						"end_lat": 30,
+						"end_long": 60,
+						"rider_name": "Amy",
+						"driver_name": "Bob",
+						"driver_vehicle": "car",
+					})
+					.expect("Content-Type", /json/)
+					.expect(200, done);
+				});
+		}
+		it('should return current pagination error', (done) => {
+			request(app)
+			.get("/rides?current=abc")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+		it('should return current pagination error', (done) => {
+			request(app)
+			.get("/rides?current=0")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+		it('should return pageSize pagination error', (done) => {
+			request(app)
+			.get("/rides?pageSize=abc")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+		it('should return pageSize pagination error', (done) => {
+			request(app)
+			.get("/rides?pageSize=0")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+		it('should return 10 entries', (done) => {
+			request(app)
+			.get("/rides?current=1")
+			.expect(200)
+			.expect((res) => res.body.should.have.size(10))
+			.end(done);
+		})
+		it('should return lte 10 entries', (done) => {
+			request(app)
+			.get("/rides?current=2")
+			.expect(200)
+			.expect((res) => res.body.length.should.belowOrEqual(10))
+			.end(done);
+		})
+		it('should return pagination error', (done) => {
+			request(app)
+			.get("/rides?current=3&pageSize=10")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+		it('should return lte 5 entries', (done) => {
+			request(app)
+			.get("/rides?pageSize=5")
+			.expect(200)
+			.expect((res) => res.body.should.have.size(5))
+			.end(done);
+		})
+	});
 });
