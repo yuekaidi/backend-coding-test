@@ -31,6 +31,9 @@ Please deliver documentation of the server that clearly explains the goals of th
 1. A pull request against `master` of your fork with a clear description of the change and purpose and merge it
 3. **[BONUS]** Create an easy way to deploy and view the documentation in a web format and include instructions to do so
 
+#### Result
+Run `npm start` & view the documentation here: <localhost:8010/api-docs/>
+
 ### Implement Tooling
 
 Please implement the following tooling:
