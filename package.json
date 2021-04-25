@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "npx nyc mocha tests",
+    "test:load": "forever start --minUptime 1000 --spinSleepTime 1000 index.js && artillery run load-test.yaml && forever stop index.js",
     "start": "node index.js"
   },
   "keywords": [
