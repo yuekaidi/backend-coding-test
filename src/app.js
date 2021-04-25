@@ -55,10 +55,9 @@ module.exports = (db) => {
 				message: "Driver vehicle must be a non empty string"
 			});
 		}
-
-		var values = [req.body.start_lat, req.body.start_long, req.body.end_lat, req.body.end_long, req.body.rider_name, req.body.driver_name, req.body.driver_vehicle];
         
-		const result = db.run("INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)", values, function (err) {
+		var statement = db.prepare("INSERT INTO Rides(startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle) VALUES (?, ?, ?, ?, ?, ?, ?)")
+		statement.run(req.body.start_lat, req.body.start_long, req.body.end_lat, req.body.end_long, req.body.rider_name, req.body.driver_name, req.body.driver_vehicle, function (err) {
 			if (err) {
 				return res.send({
 					error_code: "SERVER_ERROR",
@@ -116,7 +115,8 @@ module.exports = (db) => {
 	});
 
 	app.get("/rides/:id", (req, res) => {
-		db.all(`SELECT * FROM Rides WHERE rideID='${req.params.id}'`, function (err, rows) {
+		const query = db.prepare('SELECT * FROM Rides WHERE rideID= ?');
+		query.all(req.params.id, function (err, rows) {
 			if (err) {
 				return res.send({
 					error_code: "SERVER_ERROR",

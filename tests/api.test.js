@@ -346,4 +346,77 @@ describe("API tests", () => {
 			.end(done);
 		})
 	});
+
+	describe("Injection test", () => {
+		it("should prevent injection x' or 1=1 --", (done) => {
+			request(app)
+				.post("/rides")
+				.set("Content-Type", "application/json")
+				.send({
+					"start_lat": 0,
+					"start_long": 0,
+					"end_lat": 30,
+					"end_long": 60,
+					"rider_name": "x' or 1=1 --",
+					"driver_name": "Bob",
+					"driver_vehicle": "car",
+				})
+				.expect("Content-Type", /json/)
+				.expect(200)
+				.expect((res) => should.equal(res.body[0].riderName, "x' or 1=1 --"))
+				.end(done);
+		});
+		
+		it(`should prevent injection of rideId`, (done) => {
+			request(app)
+				.post("/rides")
+				.set("Content-Type", "application/json")
+				.send({
+					"rideId": 123,
+					"start_lat": 0,
+					"start_long": 0,
+					"end_lat": 30,
+					"end_long": 60,
+					"rider_name": 'x" or 1=1 #',
+					"driver_name": "Bob",
+					"driver_vehicle": "car",
+				})
+				.expect("Content-Type", /json/)
+				.expect(200)
+				.expect((res) => should.equal(res.body[0].riderName, 'x" or 1=1 #'))
+				.end(done);
+		});
+		it("should prevent injection x%' or 1=1 --", (done) => {
+			request(app)
+				.post("/rides")
+				.set("Content-Type", "application/json")
+				.send({
+					"start_lat": 0,
+					"start_long": 0,
+					"end_lat": 30,
+					"end_long": 60,
+					"rider_name": "1'; DROP TABLE Rides;",
+					"driver_name": "Bob",
+					"driver_vehicle": "car",
+				})
+				.expect("Content-Type", /json/)
+				.expect(200)
+				.expect((res) => should.equal(res.body[0].riderName, "1'; DROP TABLE Rides;"))
+				.end(done);
+		});
+		it('should prevent injection', (done) => {
+			request(app)
+			.get("/rides?current=0%'")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+		it('should prevent injection', (done) => {
+			request(app)
+			.get("/rides?current=x' or 1=1 --")
+			.expect(200)
+			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+			.end(done);
+		})
+	})
 });
