@@ -80,6 +80,8 @@ module.exports = (db) => {
 	});
 
 	app.get("/rides", (req, res) => {
+		const current = Number(req.query.current || '1');
+		const pageSize = Number(req.query.pageSize || '10');
 		db.all("SELECT * FROM Rides", function (err, rows) {
 			if (err) {
 				return res.send({
@@ -95,7 +97,21 @@ module.exports = (db) => {
 				});
 			}
 
-			res.send(rows);
+			if (!Number.isInteger(current) || !Number.isInteger(pageSize) || pageSize < 1 || current < 1) {
+				return res.send({
+					error_code: "PAGINATION_ERROR",
+					message: "Page number not valid"
+				});
+			}
+
+			if (rows.length < (current - 1) * pageSize) {
+				return res.send({
+					error_code: "PAGINATION_ERROR",
+					message: "Page number exceed maximum page number"
+				});
+			}
+
+			res.send(rows.slice((current - 1) * pageSize, current * pageSize));
 		});
 	});
 

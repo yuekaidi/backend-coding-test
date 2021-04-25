@@ -38,9 +38,31 @@
     },
     "/rides": {
       "get": {
-        "summary": "Retrieve all rides data",
+        "summary": "Retrieve paginated rides data",
         "tags": ["Rides"],
-        "description": "To retrieve all rides data from rides table in db",
+        "description": "To retrieve all rides data of current page from rides table in db of",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "current",
+            "description": "Current page number",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "description": "Number of entries for each page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Rides data",
@@ -109,10 +131,10 @@
           {
             "in": "path",
             "name": "id",
+            "description": "RideId to get",
             "schema": {
               "type": "integer",
-              "required": true,
-              "description": "Numeric ID of the user to get"
+              "required": true
             }
           }
         ],
@@ -152,30 +174,22 @@
         "start_lat": {
           "type": "number",
           "minimum": -90,
-          "maximum": 90,
-          "exclusiveMinimum": true,
-          "exclusiveMaximum": true
+          "maximum": 90
         },
         "start_long": {
           "type": "number",
           "minimum": -180,
-          "maximum": 180,
-          "exclusiveMinimum": true,
-          "exclusiveMaximum": true
+          "maximum": 180
         },
         "end_lat": {
           "type": "number",
           "minimum": -90,
-          "maximum": 90,
-          "exclusiveMinimum": true,
-          "exclusiveMaximum": true
+          "maximum": 90
         },
         "end_long": {
           "type": "number",
           "minimum": -180,
-          "maximum": 180,
-          "exclusiveMinimum": true,
-          "exclusiveMaximum": true
+          "maximum": 180
         },
         "rider_name": {
           "type": "string",
