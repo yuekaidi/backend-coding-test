@@ -1,21 +1,23 @@
-'use strict';
-
-const express = require('express');
-const app = express();
+"use strict";
 const port = 8010;
 
-const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(":memory:");
+const buildSchemas = require("./src/schemas");
+const helmet = require("helmet");
+const cors = require('cors')
 
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(':memory:');
-
-const buildSchemas = require('./src/schemas');
+var corsOptions = {
+    origin: "http://localhost:8010"
+  }
 
 db.serialize(() => {
-    buildSchemas(db);
+	buildSchemas(db);
 
-    const app = require('./src/app')(db);
+	const app = require("./src/app")(db);
 
-    app.listen(port, () => console.log(`App started and listening on port ${port}`));
+	app.use(helmet());
+    app.use(cors(corsOptions))
+    
+	app.listen(port, () => console.log(`App started and listening on port ${port}`));
 });
