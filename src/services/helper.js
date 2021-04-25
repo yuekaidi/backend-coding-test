@@ -3,7 +3,7 @@
  * @param {object}  db  db instance
  */
 const dbCreateSchema = (db) => {
-    const createRideTableSchema = `
+	const createRideTableSchema = `
         CREATE TABLE Rides
         (
         rideID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,9 +15,9 @@ const dbCreateSchema = (db) => {
         driverName TEXT NOT NULL,
         driverVehicle TEXT NOT NULL,
         created DATETIME default CURRENT_TIMESTAMP
-     );`
-    db.run(createRideTableSchema);
-}
+     );`;
+	db.run(createRideTableSchema);
+};
 
 /**
  * DB All request Handler
@@ -25,15 +25,15 @@ const dbCreateSchema = (db) => {
  * @param {string}  script  SQL Script
  */
 const dbAll = (db, script) => {
-    return new Promise((resolve, reject) => {
-      db.all(script, function (err, rows) {
-        if (err) {
-          reject(err);
-        }
-        resolve(rows);
-      });
-    });
-  };
+	return new Promise((resolve, reject) => {
+		db.all(script, function (err, rows) {
+			if (err) {
+				reject(err);
+			}
+			resolve(rows);
+		});
+	});
+};
 
 
 /**
@@ -43,18 +43,18 @@ const dbAll = (db, script) => {
  * @param {list}    values  values to be inserted into SQL Script
  */
 const dbRun = (db, script, values) => {
-    return new Promise((resolve, reject) => {
-      db.run(script, values, function (err) {
-        if (err) {
-          reject(err);
-        }
-        resolve(this.lastID);
-      });
-    });
-  };
+	return new Promise((resolve, reject) => {
+		db.run(script, values, function (err) {
+			if (err) {
+				reject(err);
+			}
+			resolve(this.lastID);
+		});
+	});
+};
 
 module.exports = {
-    dbCreateSchema,
-    dbAll,
-    dbRun
+	dbCreateSchema,
+	dbAll,
+	dbRun
 };

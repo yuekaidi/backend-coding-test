@@ -7,12 +7,12 @@ const jsonParser = bodyParser.json();
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
-const healthApi = require('./controllers/health')
-const rideApi = require('./controllers/ride')
+const healthApi = require("./controllers/health");
+const rideApi = require("./controllers/ride");
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-module.exports = (db) => {
+module.exports = () => {
 	// Health
 	app.get("/health", healthApi.get);
 

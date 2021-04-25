@@ -7,8 +7,8 @@ const db = new sqlite3.Database(":memory:");
 
 const app = require("../src/app")();
 const should = require("should");
-const { dbCreateSchema } = require('../src/services/helper');
-app.db = db
+const { dbCreateSchema } = require("../src/services/helper");
+app.db = db;
 
 describe("Health API test", () => {
 	describe("GET /health", () => {
@@ -169,35 +169,35 @@ describe("Ride APIs tests", () => {
 					})
 					.expect("Content-Type", /json/)
 					.expect(200, done);
-				});
-		};
-		it('should return 10 entries', (done) => {
+			});
+		}
+		it("should return 10 entries", (done) => {
 			request(app)
-			.get("/rides?current=1")
-			.expect(200)
-			.expect((res) => res.body.should.have.size(10))
-			.end(done);
-		})
-		it('should return lte 10 entries', (done) => {
+				.get("/rides?current=1")
+				.expect(200)
+				.expect((res) => res.body.should.have.size(10))
+				.end(done);
+		});
+		it("should return lte 10 entries", (done) => {
 			request(app)
-			.get("/rides?current=2")
-			.expect(200)
-			.expect((res) => res.body.length.should.belowOrEqual(10))
-			.end(done);
-		})
-		it('should return pagination error', (done) => {
+				.get("/rides?current=2")
+				.expect(200)
+				.expect((res) => res.body.length.should.belowOrEqual(10))
+				.end(done);
+		});
+		it("should return pagination error", (done) => {
 			request(app)
-			.get("/rides?current=3&pageSize=10")
-			.expect(400)
-			.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
-			.end(done);
-		})
-		it('should return 5 entries', (done) => {
+				.get("/rides?current=3&pageSize=10")
+				.expect(400)
+				.expect((res) => should.equal(res.body.error_code, "PAGINATION_ERROR"))
+				.end(done);
+		});
+		it("should return 5 entries", (done) => {
 			request(app)
-			.get("/rides?pageSize=5")
-			.expect(200)
-			.expect((res) => res.body.should.have.size(5))
-			.end(done);
-		})
+				.get("/rides?pageSize=5")
+				.expect(200)
+				.expect((res) => res.body.should.have.size(5))
+				.end(done);
+		});
 	});
 });
