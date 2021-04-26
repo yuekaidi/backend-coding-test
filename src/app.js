@@ -1,6 +1,7 @@
 "use strict";
 const express = require("express");
 const app = express();
+const logger = require('./logging')
 
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
@@ -10,7 +11,10 @@ const swaggerDocument = require("./swagger.json");
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 module.exports = (db) => {
-	app.get("/health", (req, res) => res.send("Healthy"));
+	app.get("/health", (req, res) => {
+		logger.info("GET /health");
+		res.send("Healthy");
+	})
 
 	app.post("/rides", jsonParser, (req, res) => {
 		const startLatitude = Number(req.body.start_lat);
@@ -20,6 +24,7 @@ module.exports = (db) => {
 		const riderName = req.body.rider_name;
 		const driverName = req.body.driver_name;
 		const driverVehicle = req.body.driver_vehicle;
+		logger.info("POST /rides");
 
 		if (startLatitude < -90 || startLatitude > 90 || startLongitude < -180 || startLongitude > 180) {
 			return res.send({
@@ -82,6 +87,7 @@ module.exports = (db) => {
 	app.get("/rides", (req, res) => {
 		const current = Number(req.query.current || '1');
 		const pageSize = Number(req.query.pageSize || '10');
+		logger.info(`GET /rides?current=${current}&pageSize=${pageSize}`);
 		db.all("SELECT * FROM Rides", function (err, rows) {
 			if (err) {
 				return res.send({
@@ -116,6 +122,7 @@ module.exports = (db) => {
 	});
 
 	app.get("/rides/:id", (req, res) => {
+		logger.info(`GET /rides/${req.params.id}`);
 		db.all(`SELECT * FROM Rides WHERE rideID='${req.params.id}'`, function (err, rows) {
 			if (err) {
 				return res.send({
